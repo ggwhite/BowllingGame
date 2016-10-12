@@ -215,13 +215,9 @@ public class GameTest {
 
 	@Test(expected = GameOverExcpetion.class)
 	public void testOverRollTimes() {
-		int expected = 20;
-
 		for (int i = 0; i < 40; i++) {
-			game.roll(1); // 擊倒一瓶
+			game.roll(1);
 		}
-
-		Assert.assertEquals(expected, game.sum());
 	}
 	
 	@Test(expected = GameOverExcpetion.class)
