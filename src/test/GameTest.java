@@ -218,5 +218,19 @@ public class GameTest {
 		
 		Assert.assertEquals(expected, game.sum());
 	}
+	
+	@Test
+	public void testWrongPins() {
+		int expected = 300;
+
+		game.roll(8);
+		game.roll(8);
+		
+		for (int i = 0; i < 12; i++) {
+			game.roll(0);
+		}
+		
+		Assert.assertEquals(expected, game.sum());
+	}
 
 }
