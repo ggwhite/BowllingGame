@@ -5,6 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import main.Game;
+import main.exception.GameOverExcpetion;
+import main.exception.PinsErrorExcpetion;
 
 public class GameTest {
 
@@ -33,17 +35,6 @@ public class GameTest {
 		int expected = 20;
 
 		for (int i = 0; i < 20; i++) {
-			game.roll(1); // 擊倒一瓶
-		}
-
-		Assert.assertEquals(expected, game.sum());
-	}
-	
-	@Test
-	public void testOverRoll() {
-		int expected = 20;
-
-		for (int i = 0; i < 40; i++) {
 			game.roll(1); // 擊倒一瓶
 		}
 
@@ -142,7 +133,7 @@ public class GameTest {
 		game.roll(3);
 		game.roll(7);
 		
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < 14; i++) {
 			game.roll(0);
 		}
 		
@@ -159,7 +150,7 @@ public class GameTest {
 		game.roll(3);	//3, 73
 		game.roll(4);	//4, 77
 		
-		for (int i = 0; i < 15; i++) {
+		for (int i = 0; i < 12; i++) {
 			game.roll(0);
 		}
 		
@@ -179,7 +170,7 @@ public class GameTest {
 		game.roll(3);	//3, 103
 		game.roll(1);	//1, 104
 		
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < 8; i++) {
 			game.roll(0);
 		}
 		
@@ -201,7 +192,7 @@ public class GameTest {
 		game.roll(2);	//2, 147
 		game.roll(4);	//4, 151
 		
-		for (int i = 0; i < 15; i++) {
+		for (int i = 0; i < 4; i++) {
 			game.roll(0);
 		}
 		
@@ -219,18 +210,84 @@ public class GameTest {
 		Assert.assertEquals(expected, game.sum());
 	}
 	
-	@Test
-	public void testWrongPins() {
-		int expected = 300;
+	
+	//錯誤處理
 
+	@Test(expected = GameOverExcpetion.class)
+	public void testOverRollTimes() {
+		int expected = 20;
+
+		for (int i = 0; i < 40; i++) {
+			game.roll(1); // 擊倒一瓶
+		}
+
+		Assert.assertEquals(expected, game.sum());
+	}
+	
+	@Test(expected = GameOverExcpetion.class)
+	public void testOverStrike() {
+		for (int i = 0; i < 13; i++) {
+			game.roll(10);
+		}
+	}
+	
+	@Test(expected = PinsErrorExcpetion.class)
+	public void testWrongPinsOnFrame() {
 		game.roll(8);
 		game.roll(8);
+	}
+	
+	@Test(expected = PinsErrorExcpetion.class)
+	public void testWrongPinsOnRoll() {
+		game.roll(11);
+	}
+	
+	@Test(expected = PinsErrorExcpetion.class)
+	public void testWrongPinsOnRollNagtive() {
+		game.roll(-1);
+	}
+	
+	@Test(expected = PinsErrorExcpetion.class)
+	public void testWrongPinsOnLastFrame() {
 		
-		for (int i = 0; i < 12; i++) {
+		for (int i = 0; i < 18; i++) {
 			game.roll(0);
 		}
 		
-		Assert.assertEquals(expected, game.sum());
+		game.roll(8);
+		game.roll(8);
+	}
+	
+	@Test(expected = PinsErrorExcpetion.class)
+	public void testWrongPinsOnLastFrameWithStrike() {
+		
+		for (int i = 0; i < 18; i++) {
+			game.roll(0);
+		}
+		
+		game.roll(10);
+		game.roll(8);
+		game.roll(8);
+	}
+	
+	@Test(expected = PinsErrorExcpetion.class)
+	public void testWrongPinsOnLastFrameRoll() {
+		
+		for (int i = 0; i < 18; i++) {
+			game.roll(0);
+		}
+		
+		game.roll(11);
+	}
+	
+	@Test(expected = PinsErrorExcpetion.class)
+	public void testWrongPinsOnLastFrameRollNagtive() {
+		
+		for (int i = 0; i < 18; i++) {
+			game.roll(0);
+		}
+		
+		game.roll(-1);
 	}
 
 }

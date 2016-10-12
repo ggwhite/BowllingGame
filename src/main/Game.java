@@ -3,6 +3,9 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
+import main.exception.GameOverExcpetion;
+import main.exception.PinsErrorExcpetion;
+
 public class Game {
 
 	private static final int STRIKE = 10;
@@ -12,7 +15,7 @@ public class Game {
 	private List<Frame> frames = new ArrayList<Frame>();
 	
 	public Game() {}
-
+	
 	/**
 	 * 丟球
 	 * @param int 擊倒球瓶
@@ -20,7 +23,7 @@ public class Game {
 	public void roll(int pins) {
 		
 		if (!isPlayable()) {
-			return;
+			throw new GameOverExcpetion();
 		}
 		
 		Frame frame = getCurrentFrame();
@@ -110,12 +113,20 @@ public class Game {
 		}
 		
 		public void roll(int pins) {
+			
+			if (pins > 10 || pins < 0) {
+				throw new PinsErrorExcpetion();
+			}
+			
 			if (Game.UNROLL == block1) {
 				block1 = pins;
 				if (Game.STRIKE == pins) {
 					block2 = Game.PADDING;
 				}
 			} else if (Game.UNROLL == block2) {
+				if (block1 + pins > 10) {
+					throw new PinsErrorExcpetion();
+				}
 				block2 = pins;
 			}
 		}
@@ -147,11 +158,24 @@ public class Game {
 		
 		@Override
 		public void roll(int pins) {
+			if (pins > 10 || pins < 0) {
+				throw new PinsErrorExcpetion();
+			}
 			if (Game.UNROLL == block1) {
 				block1 = pins;
 			} else if (Game.UNROLL == block2) {
+				
+				if (Game.STRIKE != block1 && block1 + pins > 10) {
+					throw new PinsErrorExcpetion();
+				}
+				
 				block2 = pins;
 			} else if (block1 + block2 >= 10 && Game.UNROLL == block3) {
+				
+				if (Game.STRIKE != block2 && block2 + pins > 10) {
+					throw new PinsErrorExcpetion();
+				}
+				
 				block3 = pins;
 			}
 		}
@@ -202,7 +226,7 @@ public class Game {
 	
 	/**
 	 * 判斷遊戲是否還可繼續玩，繼續丟球
-	 * 如果第10局結束回傳true
+	 * 如果第10局結束回傳false
 	 */
 	private boolean isPlayable() {
 		if (frames.size() == 10 && frames.get(9).isOver()) {
